@@ -14,7 +14,6 @@ function parseMessage(message) {
   }
 }
 function handleMessage(message) {
-  console.log(message.member.permissionsIn(message.channel))
   if (message.channel.type === 'dm') return
   if (message.author.bot) return
   if (!isCommand(message.content)) return
@@ -110,13 +109,9 @@ function handleMessage(message) {
         message.channel.send(embed)
         return
       }
-      var msgURL
       channel['trial_announcements']
         .send(retVal)
         .then((msg) => {
-          msgURL = msg.url
-          announcementID = msg.id
-          announcement = retVal
           msg.react('✅')
           msg.react('🇽')
         })
