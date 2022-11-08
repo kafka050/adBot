@@ -6,10 +6,10 @@ module.exports = async (oldMessage, newMessage) => {
   if (newMessage.partial) await newMessage.fetch()
   if (newMessage.guild.id === main_server) {
     if (
-      oldMessage.channel.parent === categories['admin'] ||
-      oldMessage.channel === channels['trial_announcements'] ||
-      oldMessage.channel === channels['bot_testing'] ||
-      oldMessage.channel === channels['tournament_seeding']
+      oldMessage.channel.parent === categories.admin ||
+      oldMessage.channel === channels.trial_announcements ||
+      oldMessage.channel === channels.bot_testing ||
+      oldMessage.channel === channels.tournament_announcements
     ) {
       return
     }
@@ -22,15 +22,15 @@ module.exports = async (oldMessage, newMessage) => {
       }
       const embed = new MessageEmbed()
         .setAuthor(newMessage.author.tag, newMessage.author.avatarURL())
-        .setColor(colors['orange'])
-        .setThumbnail(images['ibex']['orange'])
+        .setColor(colors.orange)
+        .setThumbnail(images.ibex.orange)
         .setDescription(
           '**Message Edited in** <#' + newMessage.channel + `> ` + '[Jump to message](' + newMessage.url + ')',
         )
         .addField(`Before`, oldMessage.content)
         .addField(`After`, newMessage.content)
         .setFooter('User ID: ' + newMessage.author.id + ' | ' + newMessage.createdAt)
-      channels['logs'].send(embed)
+      channels.logs.send(embed)
       autoMod(newMessage, newMessage.author)
     }
   }

@@ -26,18 +26,18 @@ module.exports = {
     community_teams: '1039309790922420334',
     information: '1039309809930997790',
   },
+  roles: {
+    admin: '1039574893513154640',
+    staff: '1039575142076010587',
+    alpine_staff: '1039575582305964113',
+    muted: '1039575690149892116',
+    alpine_fam: '1039575841551679549',
+    tournaments: '1039575918798176277',
+  },
   // partner (server id) (channel id)
   partners: [
-    /*{ server: '151820893599825920', channel: '656210910507040769' }, // 72PC
-    { server: '669998695185383446', channel: '708088455527137322' }, // Bubble Scrims
-    { server: '549999116193890326', channel: '559068507615264788' }, // CW
-    { server: '177166991788867584', channel: '520226637397229569' }, // Disconnect
-    { server: '188180097390477313', channel: '313899241313402881' }, // Elevate League
-    { server: '639168268447514624', channel: '663906005046001674' }, // Esports CCP
-    { server: '387356059582332932', channel: '387361719271292929' }, // Peak eSports
-    { server: '279758789845057536', channel: '346172770259828746' }, // Ranked Hoops
-    { server: '129078539118051329', channel: '473187762334597120' }, // Sway eSports
-    { server: '321442388570537985', channel: '505604126378295306' }, // Team Meteor*/
+    { server: '1234567890987654321', channel: '1234567890987654321' }, // fake server/channel
+    { server: '0987654321234567890', channel: '0987654321234567890' }, // fake server/channel
   ],
   colors: {
     red: '#AD1D1D',

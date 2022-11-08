@@ -3,8 +3,8 @@ const info = require('../../info')
 
 function help(args) {
   const embed = new MessageEmbed()
-    .setColor(info.colors['blue'])
-    .setThumbnail(info.images['ibex']['blue'])
+    .setColor(info.colors.blue)
+    .setThumbnail(info.images.ibex.blue)
     .setFooter(info.version)
   if (args[0] === undefined || args[0] === `1`) {
     embed

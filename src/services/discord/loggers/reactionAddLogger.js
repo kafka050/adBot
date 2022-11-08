@@ -8,13 +8,13 @@ module.exports = async (reaction, user) => {
     //Checks complete.
 
     // return when promo implemented
-    /*if (message.id === announcementI) {
+    /*if (message.id === announcementId) {
       if (reaction.emoji.toString() === '✅') {
-        const embed = new Discord.MessageEmbed().setColor(color['blue']).setDescription('Announcement sending...')
+        const embed = new MessageEmbed().setColor(colors.blue).setDescription('Announcement sending...')
         reaction.message.channel.send(embed)
         promo()
       } else if (reaction.emoji.toString() === '🇽') {
-        const embed = new Discord.MessageEmbed().setColor(color['orange']).setDescription('Announcement cancelled.')
+        const embed = new MessageEmbed().setColor(colors.orange).setDescription('Announcement cancelled.')
         reaction.message.channel.send(embed)
       }
     }*/

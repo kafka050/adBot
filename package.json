@@ -1,6 +1,6 @@
 {
   "name": "pinebot",
-  "version": "Alpha",
+  "version": "Beta",
   "description": "A test bot for Alpine",
   "main": "index.js",
   "scripts": {

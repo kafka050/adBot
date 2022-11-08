@@ -17,9 +17,9 @@ module.exports = async (reaction, user) => {
         rank = key
       }
     }
-    for (const key in roleID['rank']) {
+    for (const key in roleID.rank) {
       if (key === rank) {
-        member.roles.remove(roleID['rank'][key])
+        member.roles.remove(roleID.rank[key])
       }
     }*/
   }

@@ -10,11 +10,11 @@ module.exports = (oldMember, newMember) => {
             .setAuthor(newMember.user.tag, newMember.user.avatarURL())
             .setColor(`#28B61C`)
             .setTitle('Given Role')
-            .setThumbnail(images['ibex']['blue'])
+            .setThumbnail(images.ibex.blue)
             .addField('User', `<@` + newMember.id + `>`)
             .addField('Role', `<@&` + role.id + `>`)
             .setFooter('User ID: ' + newMember.id)
-          channels['logs'].send(embed)
+          channels.logs.send(embed)
           return
         }
       }
@@ -26,11 +26,11 @@ module.exports = (oldMember, newMember) => {
             .setAuthor(newMember.user.tag, newMember.user.avatarURL())
             .setColor(`#28B61C`)
             .setTitle('Removed from Role')
-            .setThumbnail(images['ibex']['blue'])
+            .setThumbnail(images.ibex.blue)
             .addField('User', `<@` + newMember.id + `>`)
             .addField('Role', `<@&` + role.id + `>`)
             .setFooter('User ID: ' + newMember.id)
-          channels['logs'].send(embed)
+          channels.logs.send(embed)
           return
         }
       }

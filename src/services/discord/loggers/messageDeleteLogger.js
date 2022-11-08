@@ -10,10 +10,10 @@ module.exports = async (message) => {
       return
     }
     if (
-      message.channel.parent === categories['admin'] ||
-      message.channel === channels['trial_announcements'] ||
-      message.channel === channels['bot_testing'] ||
-      message.channel === channels['tournament_seeding']
+      message.channel.parent === categories.admin ||
+      message.channel === channels.trial_announcements ||
+      message.channel === channels.bot_testing ||
+      message.channel === channels.tournament_seeding
     ) {
       return
     }
@@ -21,12 +21,12 @@ module.exports = async (message) => {
       message.content = message.content.slice(0, 250) + '...'
     }
     const embed = new MessageEmbed()
-      .setColor(colors['orange'])
+      .setColor(colors.orange)
       .setTitle('Message Deleted')
-      .setThumbnail(images['ibex']['orange'])
+      .setThumbnail(images.ibex.orange)
       .addField(`Author`, message.author)
       .addField(`Message`, message.toString())
       .addField(`Channel`, `<#` + message.channel + `>`)
-    channels['logs'].send(embed)
+    channels.logs.send(embed)
   }
 }

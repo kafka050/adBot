@@ -6,10 +6,10 @@ module.exports = async (_channel) => {
   if (_channel.guild.id === main_server) {
     if (_channel.type === 'dm') return
     const embed = new MessageEmbed()
-      .setColor(colors['blue'])
+      .setColor(colors.blue)
       .setTitle('Channel Deleted')
-      .setThumbnail(images['ibex']['blue'])
+      .setThumbnail(images.ibex.blue)
       .addField(`Channel`, _channel)
-    channels['logs'].send(embed)
+    channels.logs.send(embed)
   }
 }

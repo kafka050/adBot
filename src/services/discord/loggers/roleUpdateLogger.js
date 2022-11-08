@@ -29,13 +29,13 @@ module.exports = (oldRole, newRole) => {
     }
     if (counter < 3) {
       const embed = new MessageEmbed()
-        .setColor(colors['blue'])
+        .setColor(colors.blue)
         .setTitle('Role Modified')
-        .setThumbnail(images['ibex']['blue'])
+        .setThumbnail(images.ibex.blue)
         .addField(`Name`, changes[0])
         .addField(`Hex Color`, changes[1])
         .addField(`Permissions`, changes[2])
-      channels['logs'].send(embed)
+      channels.logs.send(embed)
     }
   }
 }
