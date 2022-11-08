@@ -18,6 +18,7 @@ module.exports = {
     set_roles: '1039309595023249489',
     community_clips: '1039309631639523518',
     tournament_announcements: '1039309653399572530',
+    rules: '1039419656999551026',
   },
   categories: {
     admin: '1039309724774060126',

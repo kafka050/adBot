@@ -1,6 +1,7 @@
 const discord = require('discord.js')
 const info = require('../info')
-const help = require('../commands/help')
+const help = require('../commands/info/help')
+const infoCmds = require('../commands/info/infoCmds')
 
 function isCommand(str) {
   return str[0] == '.'
@@ -22,13 +23,10 @@ function handleMessage(message) {
   }
   const parsedMessage = parseMessage(message)
   const args = parsedMessage.args
-  const embed = new discord.MessageEmbed()
-    .setColor(info.colors['blue'])
-    .setThumbnail(info.images['ibex']['blue'])
-    .setFooter(info.version)
+  let embed
   switch (parsedMessage.command) {
     case 'help':
-      help(message, args, embed)
+      embed = help(args)
       break
     case 'promo':
       let retVal = ''
@@ -123,8 +121,17 @@ function handleMessage(message) {
         })
       break
     default:
+      if (parsedMessage.command in infoCmds) {
+        embed = infoCmds[parsedMessage.command]
+      } else {
+        embed = new discord.MessageEmbed()
+          .setColor(info.colors['blue'])
+          .setTitle('Error')
+          .setDescription('Invalid command, use .help')
+      }
       break
   }
+  message.channel.send(embed)
 }
 module.exports = {
   handleMessage: handleMessage,
