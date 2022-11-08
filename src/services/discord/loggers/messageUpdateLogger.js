@@ -31,7 +31,6 @@ module.exports = async (oldMessage, newMessage) => {
         .addField(`After`, newMessage.content)
         .setFooter('User ID: ' + newMessage.author.id + ' | ' + newMessage.createdAt)
       channels.logs.send(embed)
-      autoMod(newMessage, newMessage.author)
     }
   }
 }

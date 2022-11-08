@@ -20,9 +20,6 @@ function handleMessage(message) {
   if (message.channel.type === 'dm') return
   if (message.author.bot) return
   if (!isCommand(message.content)) return
-  if (!message.member.permissionsIn(message.channel).has('ADMINISTRATOR')) {
-    autoMod(message, message.author)
-  }
   const parsedMessage = parseMessage(message)
   const args = parsedMessage.args
   let embed

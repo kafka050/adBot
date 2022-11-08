@@ -8,5 +8,4 @@ module.exports = (member) => {
     .setDescription(`<@` + member.id + `> has left.`)
     .setFooter('User ID: ' + member.id)
   channels.logs.send(embed)
-  channels.member_count.setName('Alpine Fam: ' + member.guild.memberCount)
 }

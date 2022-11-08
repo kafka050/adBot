@@ -11,9 +11,6 @@
 //Setup
 const info = require('./info')
 const Discord = require('discord.js')
-const messageHandler = require('./skills/messageHandler')
-const ms = require('ms')
-const { linkBlacklist } = require('./info')
 const memberAddLogger = require('./loggers/memberAddLogger')
 const memberRemoveLogger = require('./loggers/memberRemoveLogger')
 const memberUpdateLogger = require('./loggers/memberUpdateLogger')
@@ -26,6 +23,9 @@ const roleDeleteLogger = require('./loggers/roleDeleteLogger')
 const roleUpdateLogger = require('./loggers/roleUpdateLogger')
 const reactionAddLogger = require('./loggers/reactionAddLogger')
 const reactionRemoveLogger = require('./loggers/reactionRemoveLogger')
+const { sendWelcome, updateMemberCount } = require('./tools/utils')
+const autoMod = require('./skills/autoMod')
+const { handleMessage } = require('./skills/messageHandler')
 const bot = new Discord.Client({ partials: Object.values(Discord.Constants.PartialTypes) })
 
 /**
@@ -53,17 +53,26 @@ bot.on('ready', async () => {
  * This code runs whenever there is a message sent in the discord server
  * Does not run when message sent by another bot, or if in DM
  */
-bot.on('message', async (message) => messageHandler.handleMessage(message))
+bot.on('message', (message) => {
+  handleMessage(message)
+  autoMod(message, message.author)
+})
 
-/**
- * Logs
- */
-
-bot.on('guildMemberAdd', (member) => memberAddLogger(member))
-bot.on('guildMemberRemove', (member) => memberRemoveLogger(member))
+bot.on('guildMemberAdd', (member) => {
+  memberAddLogger(member)
+  sendWelcome(member)
+  updateMemberCount(member)
+})
+bot.on('guildMemberRemove', (member) => {
+  memberRemoveLogger(member)
+  updateMemberCount(member)
+})
 bot.on('guildMemberUpdate', (oldMember, newMember) => memberUpdateLogger(oldMember, newMember))
 bot.on('messageDelete', async (message) => messageDeleteLogger(message))
-bot.on('messageUpdate', async (oldMessage, newMessage) => messageUpdateLogger(oldMessage, newMessage))
+bot.on('messageUpdate', async (oldMessage, newMessage) => {
+  messageUpdateLogger(oldMessage, newMessage)
+  autoMod(newMessage, newMessage.author)
+})
 bot.on('channelCreate', (channel) => channelCreateLogger(channel))
 bot.on('channelDelete', async (channel) => channelDeleteLogger(channel))
 bot.on('roleCreate', (role) => roleCreateLogger(role))

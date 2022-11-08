@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js')
+const ms = require('ms')
 const { roles, colors, images, channels } = require('../../info')
 /**
  * Mutes 'person' for a specified amount of time, DM's 'person', logs the mute

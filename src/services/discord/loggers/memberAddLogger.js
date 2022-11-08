@@ -14,11 +14,4 @@ module.exports = (member) => {
     .addField(`Account created: `, finalString)
     .setFooter(`User ID: ` + member.id + '\nJoined: ' + member.joinedAt)
   channels.logs.send(embed)
-  channels.welcome.send(
-    `Welcome ` +
-      member.toString() +
-      ` to the official discord server of **Alpine Esports!** ` +
-      emotes.ibex.black.toString(),
-  )
-  channels.member_count.setName('Alpine Fam: ' + member.guild.memberCount)
 }
