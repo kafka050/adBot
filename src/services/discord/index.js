@@ -14,6 +14,18 @@ const Discord = require('discord.js')
 const messageHandler = require('./skills/messageHandler')
 const ms = require('ms')
 const { linkBlacklist } = require('./info')
+const memberAddLogger = require('./loggers/memberAddLogger')
+const memberRemoveLogger = require('./loggers/memberRemoveLogger')
+const memberUpdateLogger = require('./loggers/memberUpdateLogger')
+const messageDeleteLogger = require('./loggers/messageDeleteLogger')
+const messageUpdateLogger = require('./loggers/messageUpdateLogger')
+const channelCreateLogger = require('./loggers/channelCreateLogger')
+const channelDeleteLogger = require('./loggers/channelDeleteLogger')
+const roleCreateLogger = require('./loggers/roleCreateLogger')
+const roleDeleteLogger = require('./loggers/roleDeleteLogger')
+const roleUpdateLogger = require('./loggers/roleUpdateLogger')
+const reactionAddLogger = require('./loggers/reactionAddLogger')
+const reactionRemoveLogger = require('./loggers/reactionRemoveLogger')
 const bot = new Discord.Client({ partials: Object.values(Discord.Constants.PartialTypes) })
 
 /**
@@ -59,278 +71,18 @@ bot.on('message', async (message) => messageHandler.handleMessage(message))
  * Role modification
  */
 
-bot.on('guildMemberAdd', (member) => {
-  console.log('Log: Member Joined Server\n')
-  if (member.guild.id === server_id) {
-    const userCreated = member.user.createdAt.toString().split(' ')
-    const finalString = userCreated[1] + ' ' + userCreated[2] + ', ' + userCreated[3]
-    const embed = new Discord.MessageEmbed()
-      .setAuthor(member.user.tag, member.user.avatarURL())
-      .setThumbnail(image['ibex']['blue'])
-      .setColor(color['blue'])
-      .setTitle(`User Joined`)
-      .addField(`Account created: `, finalString)
-      .setFooter(`User ID: ` + member.id + '\nJoined: ' + member.joinedAt)
-    channel['logs'].send(embed)
-    channel['welcome'].send(
-      `Welcome ` +
-        member.toString() +
-        ` to the official Discord server of **Alpine Esports!** ` +
-        emote['ibex']['black'].toString(),
-    )
-    channel['member_count'].setName('Alpine Fam: ' + member.guild.memberCount)
-    member.roles.add([roleID['alpine_fam'], roleID['tournaments']])
-  }
-})
-bot.on('guildMemberRemove', (member) => {
-  if (member.guild.id === server_id) {
-    const embed = new Discord.MessageEmbed()
-      .setAuthor(member.user.tag, member.user.avatarURL())
-      .setColor(color['blue'])
-      .setDescription(`<@` + member.id + `> has left.`)
-      .setFooter('User ID: ' + member.id)
-    channel['logs'].send(embed)
-    channel['member_count'].setName('Alpine Fam: ' + member.guild.memberCount)
-  }
-})
-bot.on('guildMemberUpdate', (oldMember, newMember) => {
-  if (newMember.guild.id === server_id) {
-    if (newMember.roles.cache.array().length > oldMember.roles.cache.array().length) {
-      for (const role of newMember.roles.cache.array()) {
-        if (!oldMember.roles.cache.array().includes(role)) {
-          if (role.id === roleID['muted'] || role.id === roleID['alpine_fam'] || role.id === roleID['tournaments'])
-            return
-          const embed = new Discord.MessageEmbed()
-            .setAuthor(newMember.user.tag, newMember.user.avatarURL())
-            .setColor(`#28B61C`)
-            .setTitle('Given Role')
-            .setThumbnail(image['ibex']['blue'])
-            .addField('User', `<@` + newMember.id + `>`)
-            .addField('Role', `<@&` + role.id + `>`)
-            .setFooter('User ID: ' + newMember.id)
-          channel['logs'].send(embed)
-          return
-        }
-      }
-    }
-    if (newMember.roles.cache.array().length < oldMember.roles.cache.array().length) {
-      for (const role of oldMember.roles.cache.array()) {
-        if (!newMember.roles.cache.array().includes(role)) {
-          if (role.id === roleID['muted']) return
-          const embed = new Discord.MessageEmbed()
-            .setAuthor(newMember.user.tag, newMember.user.avatarURL())
-            .setColor(`#28B61C`)
-            .setTitle('Removed from Role')
-            .setThumbnail(image['ibex']['blue'])
-            .addField('User', `<@` + newMember.id + `>`)
-            .addField('Role', `<@&` + role.id + `>`)
-            .setFooter('User ID: ' + newMember.id)
-          channel['logs'].send(embed)
-          return
-        }
-      }
-    }
-  }
-})
-bot.on('messageDelete', async (message) => {
-  if (message.partial) await message.fetch()
-
-  if (message.author.bot) return
-  if (message.guild.id === server_id) {
-    if (message.content.charAt(0) === info.prefix) {
-      return
-    }
-    if (
-      message.channel.parent === info.categories['admin'] ||
-      message.channel === channel['trial_announcements'] ||
-      message.channel === channel['bot_testing'] ||
-      message.channel === channel['tournament_seeding']
-    ) {
-      return
-    }
-    if (message.content.length >= 250) {
-      message.content = message.content.slice(0, 250) + '...'
-    }
-    const embed = new Discord.MessageEmbed()
-      .setColor(color['orange'])
-      .setTitle('Message Deleted')
-      .setThumbnail(image['ibex']['orange'])
-      .addField(`Author`, message.author)
-      .addField(`Message`, message.toString())
-      .addField(`Channel`, `<#` + message.channel + `>`)
-    channel['logs'].send(embed)
-  }
-})
-bot.on('messageUpdate', async (oldMessage, newMessage) => {
-  if (oldMessage.partial || newMessage.channel.type === 'dm') return
-  if (newMessage.partial) await newMessage.fetch()
-  if (newMessage.guild.id === info.main_server) {
-    if (
-      oldMessage.channel.parent === info.categories['admin'] ||
-      oldMessage.channel === channel['trial_announcements'] ||
-      oldMessage.channel === channel['bot_testing'] ||
-      oldMessage.channel === channel['tournament_seeding']
-    ) {
-      return
-    }
-    if (oldMessage.author.id != `706358071017865237`) {
-      if (oldMessage.content.length >= 250) {
-        oldMessage.content = oldMessage.content.slice(0, 250) + '...'
-      }
-      if (newMessage.content.length >= 250) {
-        newMessage.content = newMessage.content.slice(0, 250) + '...'
-      }
-      const embed = new Discord.MessageEmbed()
-        .setAuthor(newMessage.author.tag, newMessage.author.avatarURL())
-        .setColor(color['orange'])
-        .setThumbnail(image['ibex']['orange'])
-        .setDescription(
-          '**Message Edited in** <#' + newMessage.channel + `> ` + '[Jump to message](' + newMessage.url + ')',
-        )
-        .addField(`Before`, oldMessage.content)
-        .addField(`After`, newMessage.content)
-        .setFooter('User ID: ' + newMessage.author.id + ' | ' + newMessage.createdAt)
-      channel['logs'].send(embed)
-      autoMod(newMessage, newMessage.author)
-    }
-  }
-})
-bot.on('channelCreate', (_channel) => {
-  if (_channel.type === 'dm') return
-  if (_channel.guild.id === server_id) {
-    const embed = new Discord.MessageEmbed()
-      .setColor(color['blue'])
-      .setTitle('Channel Created')
-      .setThumbnail(image['ibex']['blue'])
-      .addField(`Channel`, _channel)
-    channel['logs'].send(embed)
-  }
-})
-bot.on('channelDelete', async (_channel) => {
-  if (_channel.partial) await _channel.fetch()
-  if (_channel.guild.id === server_id) {
-    if (_channel.type === 'dm') return
-    const embed = new Discord.MessageEmbed()
-      .setColor(color['blue'])
-      .setTitle('Channel Deleted')
-      .setThumbnail(image['ibex']['blue'])
-      .addField(`Channel`, _channel)
-    channel['logs'].send(embed)
-  }
-})
-bot.on('roleCreate', (role) => {
-  if (role.guild.id === server_id) {
-    const embed = new Discord.MessageEmbed()
-      .setColor(color['blue'])
-      .setTitle('Role Created')
-      .setThumbnail(image['ibex']['blue'])
-      .addField(`Role`, role)
-    channel['logs'].send(embed)
-  }
-})
-bot.on('roleDelete', (role) => {
-  if (role.guild.id === server_id) {
-    const embed = new Discord.MessageEmbed()
-      .setColor(color['blue'])
-      .setTitle('Role Deleted')
-      .setThumbnail(image['ibex']['blue'])
-      .addField(`Role`, role)
-    channel['logs'].send(embed)
-  }
-})
-bot.on('roleUpdate', (oldRole, newRole) => {
-  if (newRole.guild.id === server_id) {
-    const changes = {
-      name: '',
-      hexColor: '',
-      permissions: '',
-    }
-    let counter = 0
-    if (!newRole.permissions.equals(oldRole.permissions)) {
-      changes[2] = 'Permissions have been tampered with :sunglasses:'
-    } else if (newRole.permissions.equals(oldRole.permissions)) {
-      changes[2] = 'No changes.'
-      counter++
-    }
-    if (newRole.name != oldRole.name) {
-      changes[0] = oldRole.name.toString() + ' --> ' + newRole.name.toString()
-    } else if (newRole.name === oldRole.name) {
-      changes[0] = 'No changes.'
-      counter++
-    }
-    if (newRole.hexColor != oldRole.hexColor) {
-      changes[1] = oldRole.hexColor.toString() + ' --> ' + newRole.hexColor.toString()
-    } else if (newRole.hexColor === oldRole.hexColor) {
-      changes[1] = 'No changes.'
-      counter++
-    }
-    if (counter < 3) {
-      const embed = new Discord.MessageEmbed()
-        .setColor(color['blue'])
-        .setTitle('Role Modified')
-        .setThumbnail(image['ibex']['blue'])
-        .addField(`Name`, changes[0])
-        .addField(`Hex Color`, changes[1])
-        .addField(`Permissions`, changes[2])
-      channel['logs'].send(embed)
-    }
-  }
-})
-bot.on('messageReactionAdd', async (reaction, user) => {
-  if (reaction.message.guild.id === server_id) {
-    if (user.bot) return
-    if (reaction.message.partial) await reaction.message.fetch()
-    const message = reaction.message
-    if (message.id != set_role_message && message.id != announcementID) return
-    //Checks complete.
-    if (message.id === set_role_message) {
-      const member = reaction.message.guild.members.cache.get(user.id)
-      let rank = ''
-      for (const key in emote['rank']) {
-        if (emote['rank'][key] === reaction.emoji) {
-          rank = key
-        }
-      }
-      for (const key in roleID['rank']) {
-        if (key === rank) {
-          member.roles.add(roleID['rank'][key])
-        }
-      }
-    } else if (message.id === announcementID) {
-      if (reaction.emoji.toString() === '✅') {
-        const embed = new Discord.MessageEmbed().setColor(color['blue']).setDescription('Announcement sending...')
-        reaction.message.channel.send(embed)
-        promo()
-      } else if (reaction.emoji.toString() === '🇽') {
-        const embed = new Discord.MessageEmbed().setColor(color['orange']).setDescription('Announcement cancelled.')
-        reaction.message.channel.send(embed)
-      }
-    }
-  }
-})
-bot.on('messageReactionRemove', async (reaction, user) => {
-  if (reaction.message.guild.id === server_id) {
-    if (user.bot) return
-    if (reaction.message.partial) await reaction.message.fetch()
-    const message = reaction.message
-    if (message.id != set_role_message) return
-    //Checks complete.
-
-    const member = reaction.message.guild.members.cache.get(user.id)
-    let rank = ''
-
-    for (const key in emote['rank']) {
-      if (emote['rank'][key] === reaction.emoji) {
-        rank = key
-      }
-    }
-    for (const key in roleID['rank']) {
-      if (key === rank) {
-        member.roles.remove(roleID['rank'][key])
-      }
-    }
-  }
-})
+bot.on('guildMemberAdd', (member) => memberAddLogger(member))
+bot.on('guildMemberRemove', (member) => memberRemoveLogger(member))
+bot.on('guildMemberUpdate', (oldMember, newMember) => memberUpdateLogger(oldMember, newMember))
+bot.on('messageDelete', async (message) => messageDeleteLogger(message))
+bot.on('messageUpdate', async (oldMessage, newMessage) => messageUpdateLogger(oldMessage, newMessage))
+bot.on('channelCreate', (channel) => channelCreateLogger(channel))
+bot.on('channelDelete', async (channel) => channelDeleteLogger(channel))
+bot.on('roleCreate', (role) => roleCreateLogger(role))
+bot.on('roleDelete', (role) => roleDeleteLogger(role))
+bot.on('roleUpdate', (oldRole, newRole) => roleUpdateLogger(oldRole, newRole))
+bot.on('messageReactionAdd', async (reaction, user) => reactionAddLogger(reaction, user))
+bot.on('messageReactionRemove', async (reaction, user) => reactionRemoveLogger(reaction, user))
 
 /**
  * Automod
