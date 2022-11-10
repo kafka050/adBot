@@ -1,10 +1,21 @@
-const { MessageEmbed } = require('discord.js')
+const { MessageEmbed, Message } = require('discord.js')
 const { colors, images, channels } = require('../../info')
 
-module.exports = (message, person, reason) => {
-  if (!person) {
-    return new MessageEmbed().setColor(colors.blue).addField(`Error`, 'Could not find user ' + person)
-  }
+/**
+ * Bans a member and logs it in punishments channel
+ * @param {Message} message Message object that triggers command
+ * @param {String[]} args Array of arguments passed by user command call
+ * @returns Embedded message to send in logs channel
+ */
+function ban(message, args) {
+  if (!args) return
+  const person = message.guild.member(message.mentions.users.first())
+  if (!person) return new MessageEmbed().setColor(colors.blue).addField(`Error`, 'Could not find user ' + person)
+
+  let reason = ''
+  if (!args[1]) reason = 'No reason given.'
+  else for (const arg in args.slice(1)) reason += ` ${arg}`
+
   const embed2 = new MessageEmbed()
     .setColor(colors.red)
     .setTitle('You have been banned from Alpine Esports')
@@ -26,3 +37,4 @@ module.exports = (message, person, reason) => {
   channels.punishments.send(banEmbed)
   return banEmbed
 }
+module.exports = ban

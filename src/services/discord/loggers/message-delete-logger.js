@@ -1,6 +1,10 @@
-const { MessageEmbed } = require('discord.js')
+const { MessageEmbed, Message } = require('discord.js')
 const { main_server, channels, categories, prefix, colors, images } = require('../info')
 
+/**
+ * Logs when a message is deleted
+ * @param {Message} message message that was deleted
+ */
 module.exports = async (message) => {
   if (message.partial) await message.fetch()
 

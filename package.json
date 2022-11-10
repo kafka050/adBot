@@ -1,6 +1,6 @@
 {
   "name": "pinebot",
-  "version": "Beta",
+  "version": "1.0.0",
   "description": "A test bot for Alpine",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^12.2.0",
+    "dotenv": "^16.0.3",
     "fs": "0.0.1-security",
     "ms": "^2.1.2"
   },

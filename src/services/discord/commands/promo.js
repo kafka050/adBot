@@ -2,6 +2,11 @@
 const { MessageEmbed } = require('discord.js')
 const { colors, channels } = require('../info')
 
+/**
+ * Formats and sends announcement message for review by admins
+ * @param {String[]} args {'w'/'a' | 'weekly'/'avalanche'} {'tonight' | [Month] [Date]}
+ * @returns an embed
+ */
 module.exports = (args) => {
   let retVal = ''
   if (args[0].toLowerCase() === 'weekly' || args[0].toLowerCase() === 'w') {
@@ -87,7 +92,7 @@ module.exports = (args) => {
       msg.react('🇽')
     })
     .then((thing) => {
-      embed
+      const embed = new MessageEmbed()
         .setColor(colors.pink)
         .setDescription('Please react to [this message](' + msgURL + ') to confirm or cancel the announcement.')
       return embed

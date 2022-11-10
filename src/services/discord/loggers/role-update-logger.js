@@ -1,6 +1,11 @@
-const { MessageEmbed } = require('discord.js')
+const { MessageEmbed, Role } = require('discord.js')
 const { main_server, colors, images, channels } = require('../info')
 
+/**
+ * Logs when a role is changed in the server
+ * @param {Role} oldRole Role pre-change
+ * @param {Role} newRole Role post-change
+ */
 module.exports = (oldRole, newRole) => {
   if (newRole.guild.id === main_server) {
     const changes = {
@@ -32,9 +37,9 @@ module.exports = (oldRole, newRole) => {
         .setColor(colors.blue)
         .setTitle('Role Modified')
         .setThumbnail(images.ibex.blue)
-        .addField(`Name`, changes[0])
-        .addField(`Hex Color`, changes[1])
-        .addField(`Permissions`, changes[2])
+        .addField(`Name`, changes.name)
+        .addField(`Hex Color`, changes.hexColor)
+        .addField(`Permissions`, changes.permissions)
       channels.logs.send(embed)
     }
   }

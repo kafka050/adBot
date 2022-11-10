@@ -1,11 +1,18 @@
 const { MessageEmbed } = require('discord.js')
 const info = require('../../info')
 
+/**
+ * Lists the commands a user can use
+ * @param {String[]} args
+ * @returns MessageEmbed listing commands
+ */
 function help(args) {
   const embed = new MessageEmbed()
     .setColor(info.colors.blue)
     .setThumbnail(info.images.ibex.blue)
     .setFooter(info.version)
+
+  // Default ".help" response
   if (args[0] === undefined || args[0] === `1`) {
     embed
       .setTitle(`Pinebot Commands [1/2]`)
@@ -46,7 +53,8 @@ function help(args) {
         `.format`,
         'Our __weekly tournaments__ are Double Elimination. Matches in the Winners Bracket are BO3. Winners Bracket Final and Grand Final matches will be BO5. Matches in the Losers Bracket are BO1. Losers Bracket Final is a BO3. __Avalanches__ are Single Elimination. All matches before the Semi Finals are BO3. The Semi Finals and the Final are both BO5.',
       )
-  } else if (args[0] === `2`) {
+  } // ".help 2" response, 2nd page
+  else if (args[0] === `2`) {
     embed
       .setTitle(`Pinebot Commands [2/2]`)
       .addField(`.latereg`, 'Ping a staff member in <#709320648215887893>, and we will help you as much as we can.')
@@ -67,7 +75,8 @@ function help(args) {
         `.subs`,
         'Yes, each team is allowed 2 substitutes. They must have completed registration and are on your team.',
       )
-  } else if (args[0].toLowerCase() === 'staff') {
+  } // ".help" staff response.
+  else if (args[0].toLowerCase() === 'staff') {
     embed
       .setTitle(`Pinebot Commands [Staff]`)
       .addField(`Mute`, '.mute <@userID> (time) (reason)')

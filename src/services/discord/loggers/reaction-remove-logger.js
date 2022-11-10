@@ -1,5 +1,11 @@
+const { User, MessageReaction } = require('discord.js')
 const { main_server, emotes } = require('../info')
 
+/**
+ * Logs removal of reactions
+ * @param {MessageReaction} reaction Reaction being removed
+ * @param {User} user User removing reaction
+ */
 module.exports = async (reaction, user) => {
   if (reaction.message.guild.id === main_server) {
     if (user.bot) return

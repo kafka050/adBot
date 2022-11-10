@@ -1,6 +1,10 @@
-const { MessageEmbed } = require('discord.js')
+const { MessageEmbed, GuildMember } = require('discord.js')
 const { main_server, images, colors, channels, emotes } = require('../info')
 
+/**
+ * Logs new users in the discord
+ * @param {GuildMember} member Member being added
+ */
 module.exports = (member) => {
   console.log('Log: Member Joined Server\n')
   if (member.guild.id != main_server) return

@@ -1,6 +1,11 @@
-const { MessageEmbed } = require('discord.js')
+const { MessageEmbed, Message } = require('discord.js')
 const { main_server, categories, channels, colors, images } = require('../info')
 
+/**
+ * Logs when a message is edited
+ * @param {Message} oldMessage Message object pre-change
+ * @param {Message} newMessage Message object post-change
+ */
 module.exports = async (oldMessage, newMessage) => {
   if (oldMessage.partial || newMessage.channel.type === 'dm') return
   if (newMessage.partial) await newMessage.fetch()

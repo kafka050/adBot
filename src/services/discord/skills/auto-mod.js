@@ -1,6 +1,11 @@
-const { MessageEmbed } = require('discord.js')
+const { MessageEmbed, Message, User } = require('discord.js')
 const { categories, channels, roles, colors } = require('../info')
 
+/**
+ * Automatically moderates messages sent on the server
+ * @param {Message} message message to be moderated
+ * @param {User} author sender of the message
+ */
 module.exports = (message, author) => {
   /**userLength = message.mentions.users.array().length
       roleLength = message.mentions.roles.array().length
