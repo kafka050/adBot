@@ -1,16 +1,12 @@
-const { MessageEmbed } = require('discord.js')
 const info = require('../../info')
-
+const Embed = require('../../services/discord/embed')
 /**
  * Lists the commands a user can use
  * @param {String[]} args
  * @returns MessageEmbed listing commands
  */
 function help(args) {
-  const embed = new MessageEmbed()
-    .setColor(info.colors.blue)
-    .setThumbnail(info.images.ibex.blue)
-    .setFooter(info.version)
+  const embed = new Embed()
 
   // Default ".help" response
   if (args[0] === undefined || args[0] === `1`) {

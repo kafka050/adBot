@@ -1,5 +1,5 @@
-const { version } = require('../../../package.json')
-const botconfig = require('../../../botconfig.json')
+const { version } = require('../package.json')
+const botconfig = require('../botconfig.json')
 
 module.exports = {
   version: version,

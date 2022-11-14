@@ -4,7 +4,7 @@
   "description": "A test bot for Alpine",
   "main": "index.js",
   "scripts": {
-    "start": "node src/services/discord/index.js"
+    "start": "node src/index.js"
   },
   "author": "Quack & Schon",
   "license": "ISC",
