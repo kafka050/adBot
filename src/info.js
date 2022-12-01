@@ -40,15 +40,15 @@ module.exports = {
     { server: '0987654321234567890', channel: '0987654321234567890' }, // fake server/channel
   ],
   colors: {
-    red: '#AD1D1D',
-    orange: '#FF8C00',
-    yellow: '#EEEE00',
-    green: '#5EA758',
-    blue: '#60ADFD',
-    purple: '#A021A0',
-    black: '#000000',
-    white: '#FFFFFF',
-    pink: '#FF69B4',
+    red: 0xad1d1d,
+    orange: 0xff8c00,
+    yellow: 0xeeee00,
+    green: 0x5ea758,
+    blue: 0x60adfd,
+    purple: 0xa021a0,
+    black: 0x000000,
+    white: 0xffffff,
+    pink: 0xff69b4,
   },
   linkBlacklist: ['http', 'www', '.com', '.net', '.org', '.gg'],
   emotes: {
@@ -69,17 +69,6 @@ module.exports = {
     ibex: {
       black: `705932864885096579`,
     },
-  },
-  colors: {
-    red: '#AD1D1D',
-    orange: '#FF8C00',
-    yellow: '#EEEE00',
-    green: '#5EA758',
-    blue: '#60ADFD',
-    purple: '#A021A0',
-    black: '#000000',
-    white: '#FFFFFF',
-    pink: '#FF69B4',
   },
   images: {
     ibex: {

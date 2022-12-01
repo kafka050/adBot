@@ -1,5 +1,6 @@
-const { MessageEmbed, Message } = require('discord.js')
+const { Message } = require('discord.js')
 const { colors, images, channels } = require('../../info')
+const { sendMessage } = require('../../tools/utils')
 
 /**
  * Bans a member and logs it in punishments channel
@@ -10,31 +11,39 @@ const { colors, images, channels } = require('../../info')
 function ban(message, args) {
   if (!args) return
   const person = message.guild.member(message.mentions.users.first())
-  if (!person) return new MessageEmbed().setColor(colors.blue).addField(`Error`, 'Could not find user ' + person)
+  if (!person) return new MessageEmbed().setColor(colors.blue).addField('Error', `Could not find user ${person}`)
 
   let reason = ''
   if (!args[1]) reason = 'No reason given.'
   else for (const arg in args.slice(1)) reason += ` ${arg}`
 
-  const embed2 = new MessageEmbed()
-    .setColor(colors.red)
-    .setTitle('You have been banned from Alpine Esports')
-    .setThumbnail(images.ibex.red)
-    .addField(`Reason`, reason)
-  person.send(embed2)
+  const embed = {
+    color: colors.red,
+    title: 'You have been banned from Alpine Esports',
+    thumbnail: {
+      url: images.ibex.red,
+    },
+    fields: [{ name: 'Reason', value: reason }],
+  }
+  person.send({ embeds: embed })
 
   setTimeout(function () {
     person.ban(reason)
   }, 5000)
 
-  const banEmbed = new MessageEmbed()
-    .setColor(colors.red)
-    .setTitle('Ban')
-    .setThumbnail(images.ibex.red)
-    .addField('User', `<@` + person.id + `>`)
-    .addField('Banned By', `<@` + message.author.id + `>`)
-    .addField('Reason', reason)
-  channels.punishments.send(banEmbed)
+  const banEmbed = {
+    color: colors.red,
+    title: 'Ban',
+    thumbnail: {
+      url: images.ibex.red,
+    },
+    fields: [
+      { name: 'User', value: `<@${person.id}>` },
+      { name: 'Banned By', value: `<@${message.author.id}>` },
+      { name: 'Reason', value: reason },
+    ],
+  }
+  sendMessage({ embeds: [banEmbed] }, channels.punishments)
   return banEmbed
 }
 module.exports = ban

@@ -1,6 +1,7 @@
-const { MessageEmbed, Message, GuildMember } = require('discord.js')
+const { Message, GuildMember } = require('discord.js')
 const ms = require('ms')
 const { roles, colors, images, channels } = require('../../info')
+const { sendMessage } = require('../../tools/utils')
 
 /**
  * Mutes a user and sends logs to punishments
@@ -11,7 +12,12 @@ const { roles, colors, images, channels } = require('../../info')
 function mute(message, args) {
   if (!args) return
   const person = message.mentions.members.first()
-  if (!person) return new MessageEmbed().setColor(colors.blue).addField(`Error`, 'Could not find user ' + person)
+  if (!person) {
+    return {
+      color: colors.blue,
+      fields: [{ name: 'Error', value: `Could not find user ${person}` }],
+    }
+  }
 
   let time = ''
   if (!args[1]) time = '24h'
@@ -22,7 +28,11 @@ function mute(message, args) {
   else for (const arg in args.slice(1)) reason += ` ${arg}`
 
   const mutedRole = message.guild.roles.fetch((r) => r.id === roles.muted)
-  if (!mutedRole) return new MessageEmbed().setColor(colors.blue).addField(`Error`, 'Could not find the muted role.')
+  if (!mutedRole)
+    return {
+      color: colors.blue,
+      fields: [{ name: 'Error', value: 'Could not find the muted role.' }],
+    }
 
   if (person.roles.highest.position >= message.guild.roles.cache.get(roles.staff).position) return
 
@@ -30,41 +40,50 @@ function mute(message, args) {
     channels.punishments.send('<@&' + roles.admin + '> Please review the following mute for possible ban.')
   }
   person.roles.add(roles.muted)
-  const logEmbed = new MessageEmbed()
-    .setTitle('User Muted')
-    .setAuthor(person.user.tag, person.user.avatarURL())
-    .setColor(colors.red)
-    .setThumbnail(images.ibex.red)
-    .addField('Muted By', message.member)
-    .setFooter(`User ID: ${person.id}`)
+  const logEmbed = {
+    title: 'User Muted',
+    author: message.author,
+    color: colors.red,
+    thumbnail: {
+      url: images.ibex.red,
+    },
+    fields: [{ name: 'Muted By', value: message.member }],
+    footer: `User ID: ${person.id}`,
+  }
 
-  const dmEmbed = new MessageEmbed()
-    .setTitle('You have been muted')
-    .setColor(colors.red)
-    .setThumbnail(images.ibex.red)
-    .addField(`Reason`, reason)
-    .setFooter('If you think this mute was made by mistake, DM an Alpine Esports Admin.')
+  const dmEmbed = {
+    title: 'You have been muted',
+    color: colors.red,
+    thumbnail: {
+      url: images.ibex.red,
+    },
+    fields: [{ name: 'Reason', value: reason }],
+    footer: 'If you think this mute was made by mistake, DM an Alpine Esports Admin.',
+  }
 
   let author = message.author
   if (author === 'AutoMod') {
     if (time === '365d' || time === '1y') {
-      logEmbed.addField('Duration', `Indefinite, message under review.`)
-      dmEmbed.addField(`Duration`, `Indefinite, message under review.`)
+      logEmbed.fields.push({ name: 'Duration', value: 'Indefinite, message under review.' })
+      dmEmbed.fields.push({ name: 'Duration', value: 'Indefinite, message under review.' })
     }
-    logEmbed.addField('Duration', `${ms(ms(time))}`)
-    dmEmbed.addField(`Duration`, `${ms(ms(time))}`)
+    logEmbed.fields.push({ name: 'Duration', value: `${ms(ms(time))}` })
+    dmEmbed.fields.push({ name: 'Duration', value: `${ms(ms(time))}` })
   } else {
-    logEmbed.addField('Duration', `${ms(ms(time))}`)
-    dmEmbed.addField(`Duration`, `${ms(ms(time))}`)
+    logEmbed.fields.push({ name: 'Duration', value: `${ms(ms(time))}` })
+    dmEmbed.fields.push({ name: 'Duration', value: `${ms(ms(time))}` })
   }
-  channels.punishments.send(logEmbed)
-  person.send(dmEmbed)
+  sendMessage({ embeds: [logEmbed] }, channels.punishments)
+  sendMessage({ embeds: [dmEmbed] }, person.dmChannel)
 
   setTimeout(function () {
     if (!person.roles.cache.get(roles.muted)) return
     person.roles.remove(roles.muted)
-    const embed = new MessageEmbed().setColor(colors.red).setDescription(`<@` + person.id + `> has been **unmuted**.`)
-    channels.punishments.send(embed)
+    const embed = {
+      color: colors.red,
+      description: `<@${person.id}> has been **unmuted**.`,
+    }
+    sendMessage({ embeds: [embed] }, channels.punishments)
   }, ms(time))
 
   return logEmbed

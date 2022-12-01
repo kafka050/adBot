@@ -1,6 +1,5 @@
-const { MessageEmbed, Message, User } = require('discord.js')
-const { categories, channels, roles, colors } = require('../info')
-
+const { Message, User } = require('discord.js')
+const { categories, channels, roles, colors, linkBlacklist } = require('../info')
 /**
  * Automatically moderates messages sent on the server
  * @param {Message} message message to be moderated
@@ -29,6 +28,7 @@ module.exports = (message, author) => {
       }*/
   const categoryWhitelist = [categories.admin, categories.staff, categories.community_teams, categories.information]
   if (categoryWhitelist.includes(message.channel.parent)) return
+  if (message.channel.isDMBased()) return
   if (
     message.content.toLowerCase().includes('steamcommunity') ||
     message.content.toLowerCase().includes('steampowered') ||
@@ -47,8 +47,11 @@ module.exports = (message, author) => {
   if (message.member.roles.highest.position >= message.guild.roles.cache.get(roles.staff).position) return
   for (const link of linkBlacklist) {
     if (message.content.toLowerCase().includes('@') && message.content.toLowerCase().includes(link)) {
-      const embed = new MessageEmbed().setColor(colors.blue).setDescription("For your safety, don't post emails.")
-      author.send(embed)
+      const embed = {
+        color: colors.blue,
+        description: "For your safety, don't post emails.",
+      }
+      sendMessage({ embeds: [embed] }, author.dmChannel)
       message.delete()
     }
   }

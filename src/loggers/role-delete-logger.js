@@ -1,4 +1,4 @@
-const { MessageEmbed, Role } = require('discord.js')
+const { Role } = require('discord.js')
 const { main_server, colors, images, channels } = require('../info')
 
 /**
@@ -6,12 +6,14 @@ const { main_server, colors, images, channels } = require('../info')
  * @param {Role} role role being removed
  */
 module.exports = (role) => {
-  if (role.guild.id === main_server) {
-    const embed = new MessageEmbed()
-      .setColor(colors.blue)
-      .setTitle('Role Deleted')
-      .setThumbnail(images.ibex.blue)
-      .addField(`Role`, role)
-    channels.logs.send(embed)
+  if (role.guild.id !== main_server) return null
+  const embed = {
+    color: colors.blue,
+    title: 'Role deleted',
+    thumbnail: {
+      url: images.ibex.blue,
+    },
+    fields: [{ name: 'Role', value: role }],
   }
+  return embed
 }

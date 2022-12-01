@@ -1,4 +1,4 @@
-const { MessageEmbed, GuildMember } = require('discord.js')
+const { GuildMember } = require('discord.js')
 const { main_server, images, channels } = require('../info')
 
 /**
@@ -7,18 +7,27 @@ const { main_server, images, channels } = require('../info')
  * @param {GuildMember} newMember Member object post-change
  */
 function addRoleLog(oldMember, newMember) {
-  for (const role of newMember.roles.cache.array()) {
-    if (oldMember.roles.cache.array().includes(role)) {
-      const embed = new MessageEmbed()
-        .setAuthor(newMember.user.tag, newMember.user.avatarURL())
-        .setColor(`#28B61C`)
-        .setTitle('Given Role')
-        .setThumbnail(images.ibex.blue)
-        .addField('User', `<@` + newMember.id + `>`)
-        .addField('Role', `<@&` + role.id + `>`)
-        .setFooter('User ID: ' + newMember.id)
-      channels.logs.send(embed)
-      return
+  for (const key of newMember.roles.cache.keys()) {
+    if (!oldMember.roles.cache.get(key)) {
+      const embed = {
+        author: {
+          name: newMember.nickname,
+          icon_url: newMember.user.avatarURL(),
+        },
+        color: 0x28b61c,
+        title: 'Given Role',
+        thumbnail: {
+          url: images.ibex.blue,
+        },
+        footer: {
+          text: `User ID: ${newMember.id}`,
+        },
+        fields: [
+          { name: 'User', value: newMember.toString() },
+          { name: 'Role', value: newMember.roles.cache.get(key).toString() },
+        ],
+      }
+      return embed
     }
   }
 }
@@ -29,18 +38,27 @@ function addRoleLog(oldMember, newMember) {
  * @param {GuildMember} newMember Member object post-change
  */
 function removeRoleLog(oldMember, newMember) {
-  for (const role of oldMember.roles.cache.array()) {
-    if (!newMember.roles.cache.array().includes(role)) {
-      const embed = new MessageEmbed()
-        .setAuthor(newMember.user.tag, newMember.user.avatarURL())
-        .setColor(`#28B61C`)
-        .setTitle('Removed from Role')
-        .setThumbnail(images.ibex.blue)
-        .addField('User', `<@` + newMember.id + `>`)
-        .addField('Role', `<@&` + role.id + `>`)
-        .setFooter('User ID: ' + newMember.id)
-      channels.logs.send(embed)
-      return
+  for (const key of oldMember.roles.cache.keys()) {
+    if (!newMember.roles.cache.get(key)) {
+      const embed = {
+        author: {
+          name: newMember.nickname,
+          icon_url: newMember.user.avatarURL(),
+        },
+        color: 0x28b61c,
+        title: 'Removed from role',
+        thumbnail: {
+          url: images.ibex.blue,
+        },
+        footer: {
+          text: `User ID: ${newMember.id}`,
+        },
+        fields: [
+          { name: 'User', value: newMember.toString() },
+          { name: 'Role', value: oldMember.roles.cache.get(key).toString() },
+        ],
+      }
+      return embed
     }
   }
 }
@@ -52,10 +70,10 @@ function removeRoleLog(oldMember, newMember) {
  */
 module.exports = (oldMember, newMember) => {
   if (newMember.guild.id !== main_server) return
-  if (newMember.roles.cache.array().length > oldMember.roles.cache.array().length) {
+  if (newMember.roles.cache.size > oldMember.roles.cache.size) {
     addRoleLog(oldMember, newMember)
   }
-  if (newMember.roles.cache.array().length < oldMember.roles.cache.array().length) {
+  if (newMember.roles.cache.size < oldMember.roles.cache.size) {
     removeRoleLog(oldMember, newMember)
   }
 }

@@ -1,10 +1,11 @@
-const { MessageEmbed, Message } = require('discord.js')
+const { Message } = require('discord.js')
 const help = require('../commands/info/help')
 const infoCmds = require('../commands/info/info-cmds')
 const ban = require('../commands/moderation/ban')
 const mute = require('../commands/moderation/mute')
 const promo = require('../commands/promo')
 const { colors, prefix } = require('../info')
+const { sendMessage } = require('../tools/utils')
 
 /**
  * Determines if a message is a command
@@ -39,7 +40,7 @@ function handleMessage(message) {
   if (!isCommand(message.content)) return
   const parsedMessage = parseMessage(message)
   const args = parsedMessage.args
-  let embed
+  let embed = {}
   switch (parsedMessage.command) {
     case 'help':
       embed = help(args)
@@ -49,17 +50,23 @@ function handleMessage(message) {
       break
     case 'mute':
       embed = mute(message, args)
+      break
     case 'ban':
       embed = ban(message, args)
+      break
     default:
       if (parsedMessage.command in infoCmds) {
         embed = infoCmds[parsedMessage.command]
       } else {
-        embed = new MessageEmbed().setColor(colors.blue).setTitle('Error').setDescription('Invalid command, use .help')
+        embed = {
+          color: colors.blue,
+          title: 'Error',
+          description: 'Invalid command, use .help',
+        }
       }
       break
   }
-  message.channel.send(embed)
+  sendMessage({ embeds: [embed] }, message.channel)
 }
 module.exports = {
   handleMessage: handleMessage,

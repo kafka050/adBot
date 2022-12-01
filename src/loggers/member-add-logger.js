@@ -1,5 +1,6 @@
-const { MessageEmbed, GuildMember } = require('discord.js')
+const { GuildMember } = require('discord.js')
 const { main_server, images, colors, channels, emotes } = require('../info')
+const { sendMessage } = require('../tools/utils')
 
 /**
  * Logs new users in the discord
@@ -10,12 +11,17 @@ module.exports = (member) => {
   if (member.guild.id != main_server) return
   const userCreated = member.user.createdAt.toString().split(' ')
   const finalString = userCreated[1] + ' ' + userCreated[2] + ', ' + userCreated[3]
-  const embed = new MessageEmbed()
-    .setAuthor(member.user.tag, member.user.avatarURL())
-    .setThumbnail(images.ibex.blue)
-    .setColor(colors.blue)
-    .setTitle(`User Joined`)
-    .addField(`Account created: `, finalString)
-    .setFooter(`User ID: ` + member.id + '\nJoined: ' + member.joinedAt)
-  channels.logs.send(embed)
+  const embed = {
+    author: member.toString(),
+    thumbnail: {
+      url: images.ibex.blue,
+    },
+    color: colors.blue,
+    title: 'User joined',
+    footer: {
+      text: `User ID: ${member.id}\nJoined: ${member.joinedAt}`,
+    },
+    fields: [{ name: 'Account created: ', value: finalString }],
+  }
+  return embed
 }

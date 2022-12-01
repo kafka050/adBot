@@ -1,6 +1,6 @@
 // NOT DONE
-const { MessageEmbed } = require('discord.js')
 const { colors, channels } = require('../info')
+const { sendTrial } = require('../skills/promotion/send-trial')
 
 /**
  * Formats and sends announcement message for review by admins
@@ -8,10 +8,10 @@ const { colors, channels } = require('../info')
  * @returns an embed
  */
 module.exports = (args) => {
-  let retVal = ''
+  let announcement = ''
   if (args[0].toLowerCase() === 'weekly' || args[0].toLowerCase() === 'w') {
     if (args[1].toLowerCase() === 'tonight') {
-      retVal +=
+      announcement +=
         `__**Alpine’s** $50 **3v3 Tournament**!__\n` +
         `Alpine invites **you** to compete **TONIGHT** for your shot at becoming our Tournament Champion and taking home **$50**. Grab your team and get ready!\n\n` +
         `**Sign up here:** https://smash.gg/alpine\n\n` +
@@ -24,7 +24,7 @@ module.exports = (args) => {
         `➤  Games will be streamed on <https://www.twitch.tv/alpine_esports>\n\n` +
         `➤ **You must join our discord** https://discord.gg/JeY7z9q`
     } else {
-      retVal +=
+      announcement +=
         `__**Alpine’s** $50 **3v3 Tournament**!__\n` +
         `Alpine invites **you** to compete this **Friday** for your shot at becoming our Tournament Champion and taking home **$50**. Grab your team and get ready!\n\n` +
         `**Sign up here:** https://smash.gg/alpine\n\n` +
@@ -43,7 +43,7 @@ module.exports = (args) => {
     }
   } else if (args[0].toLowerCase() === 'avalanche' || args[0].toLowerCase() === 'a') {
     if (args[1].toLowerCase() === 'tonight') {
-      retVal +=
+      announcement +=
         `__**AVALANCHE $300 TOURNAMENT by Alpine Esports**__\n` +
         `An avalanche is coming **TONIGHT**! Get ready to compete in Alpine’s largest tournament for your shot at taking home our biggest prize and becoming our **Avalanche Champion**!\n` +
         `From everyone at Alpine, we wish you the best of luck and can’t wait to see you all out there!\n\n` +
@@ -59,7 +59,7 @@ module.exports = (args) => {
         `➤  Games will be streamed on <https://www.twitch.tv/alpine_esports>\n\n` +
         `➤ **You must join our discord:** https://discord.gg/JeY7z9q`
     } else {
-      retVal +=
+      announcement +=
         `__**AVALANCHE $300 TOURNAMENT by Alpine Esports**__\n` +
         `An avalanche is coming **THIS FRIDAY**! Get ready to compete in Alpine’s largest tournament for your shot at taking home our biggest prize and becoming our **Avalanche Champion**!\n` +
         `From everyone at Alpine, we wish you the best of luck and can’t wait to see you all out there!\n\n` +
@@ -80,21 +80,15 @@ module.exports = (args) => {
         `➤ **You must join our discord:** https://discord.gg/JeY7z9q`
     }
   } else {
-    const embed = new MessageEmbed()
-      .setColor(colors.green)
-      .setDescription('Format: .promo [(weekly/w) / (avalanche/a)] (month) (day)')
+    const embed = {
+      color: colors.green,
+      description: 'Format: .promo [(weekly/w) / (avalanche/a)] (month) (day)',
+    }
     return embed
   }
-  channels.trial_announcements
-    .send(retVal)
-    .then((msg) => {
-      msg.react('✅')
-      msg.react('🇽')
-    })
-    .then((thing) => {
-      const embed = new MessageEmbed()
-        .setColor(colors.pink)
-        .setDescription('Please react to [this message](' + msgURL + ') to confirm or cancel the announcement.')
-      return embed
-    })
+  sendTrial(announcement)
+  return {
+    color: colors.pink,
+    description: `Please react to the message in ${channels.trial_announcements} to confirm or cancel the announcement.`,
+  }
 }

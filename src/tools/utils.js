@@ -1,4 +1,4 @@
-const { GuildMember } = require('discord.js')
+const { GuildMember, Message, BaseChannel, Base, BaseGuildTextChannel } = require('discord.js')
 
 module.exports = {
   /**
@@ -16,5 +16,13 @@ module.exports = {
    */
   updateMemberCount: (member) => {
     channels.member_count.setName('Alpine Fam: ' + member.guild.memberCount)
+  },
+  /**
+   * Sends message to channel
+   * @param {Message} message message to send
+   * @param {BaseGuildTextChannel} channel channel to send message in
+   */
+  sendMessage: (message, channel) => {
+    return channel.send(message)
   },
 }

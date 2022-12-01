@@ -1,5 +1,6 @@
-const { MessageEmbed, Channel } = require('discord.js')
+const { Channel } = require('discord.js')
 const { main_server, colors, images, channels } = require('../info')
+const { sendMessage } = require('../tools/utils')
 
 /**
  * Logs deletion of discord channel
@@ -7,12 +8,16 @@ const { main_server, colors, images, channels } = require('../info')
  */
 module.exports = async (channel) => {
   if (channel.partial) await channel.fetch()
-  if (channel.guild.id === main_server && channel.type !== 'dm') {
-    const embed = new MessageEmbed()
-      .setColor(colors.blue)
-      .setTitle('Channel Deleted')
-      .setThumbnail(images.ibex.blue)
-      .addField('Channel', channel.name)
-    channels.logs.send(embed)
+  if (channel.type === ChannelType.DM || channel.type === ChannelType.GroupDM || channel.guild.id !== main_server) {
+    return null
   }
+  const embed = {
+    color: colors.blue,
+    title: 'Channel deleted',
+    thumbnail: {
+      url: images.ibex.blue,
+    },
+    fields: [{ name: 'Channel', value: channel.toString() }],
+  }
+  return embed
 }
