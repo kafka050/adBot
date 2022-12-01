@@ -6,6 +6,9 @@ module.exports = {
   prefix: botconfig.prefix,
   token: botconfig.token,
   main_server: '983818242206335017',
+  announcementID: {
+    id: '000000000000000000',
+  },
   channels: {
     logs: '1039309307742789732',
     welcome: '1039309353636868166',

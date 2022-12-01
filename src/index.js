@@ -27,6 +27,7 @@ const { sendWelcome, updateMemberCount, sendMessage } = require('./tools/utils')
 const autoMod = require('./skills/auto-mod')
 const { handleMessage } = require('./skills/message-handler')
 const { channels } = require('./info')
+const { reactionAdd } = require('./skills/reaction-handler')
 const bot = new Client({
   partials: [Partials.Message, Partials.Channel, Partials.GuildMember, Partials.Reaction, Partials.User],
   intents: [
@@ -34,6 +35,7 @@ const bot = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessageReactions,
   ],
 })
 
@@ -135,15 +137,10 @@ bot.on(Events.GuildRoleUpdate, (oldRole, newRole) => {
 })
 bot.on(Events.MessageReactionAdd, async (reaction, user) => {
   console.log('Reaction added')
-  const logEmbed = reactionAddLogger(reaction, user)
-  if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
+  reactionAdd(reaction, user)
 })
 bot.on(Events.MessageReactionRemove, async (reaction, user) => {
   console.log('Reaction removed')
-  const logEmbed = reactionRemoveLogger(reaction, user)
-  if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
 })
 
 bot.login(info.token)

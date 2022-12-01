@@ -18,7 +18,7 @@ module.exports = async (oldMessage, newMessage) => {
     oldMessage.channel === channels.trial_announcements ||
     oldMessage.channel === channels.bot_testing ||
     oldMessage.channel === channels.tournament_announcements ||
-    oldMessage.author.id == '706358071017865237'
+    oldMessage.author.bot
   ) {
     return null
   }
