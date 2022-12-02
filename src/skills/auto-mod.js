@@ -1,11 +1,12 @@
 const { Message, User } = require('discord.js')
 const { categories, channels, roles, colors, linkBlacklist } = require('../info')
+const { sendMessage } = require('../tools/utils')
 /**
  * Automatically moderates messages sent on the server
  * @param {Message} message message to be moderated
  * @param {User} author sender of the message
  */
-module.exports = (message, author) => {
+module.exports = async (message, author) => {
   /**userLength = message.mentions.users.array().length
       roleLength = message.mentions.roles.array().length
       if(userLength > 3 || roleLength > 2 || (userLength+roleLength) > 3) {
@@ -51,8 +52,8 @@ module.exports = (message, author) => {
         color: colors.blue,
         description: "For your safety, don't post emails.",
       }
-      sendMessage({ embeds: [embed] }, author.dmChannel)
-      message.delete()
+      await author.send({ embeds: [embed] })
+      await message.delete()
     }
   }
 }

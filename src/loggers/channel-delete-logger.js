@@ -1,4 +1,4 @@
-const { Channel } = require('discord.js')
+const { Channel, ChannelType } = require('discord.js')
 const { main_server, colors, images, channels } = require('../info')
 const { sendMessage } = require('../tools/utils')
 
@@ -7,7 +7,7 @@ const { sendMessage } = require('../tools/utils')
  * @param {Channel} channel deleted discord channel
  */
 module.exports = async (channel) => {
-  if (channel.partial) await channel.fetch()
+  if (channel.partial) channel = await channel.fetch()
   if (channel.type === ChannelType.DM || channel.type === ChannelType.GroupDM || channel.guild.id !== main_server) {
     return null
   }
@@ -17,7 +17,7 @@ module.exports = async (channel) => {
     thumbnail: {
       url: images.ibex.blue,
     },
-    fields: [{ name: 'Channel', value: channel.toString() }],
+    fields: [{ name: 'Channel', value: channel.name }],
   }
   return embed
 }

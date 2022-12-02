@@ -8,14 +8,18 @@ const { sendMessage } = require('../../tools/utils')
  * @param {String[]} args Array of arguments passed by user command call
  * @returns Embedded message to send in logs channel
  */
-function ban(message, args) {
+async function ban(message, args) {
   if (!args) return
-  const person = message.guild.member(message.mentions.users.first())
-  if (!person) return new MessageEmbed().setColor(colors.blue).addField('Error', `Could not find user ${person}`)
+  const person = message.guild.members.cache.get(message.mentions.users.first().id)
+  if (!person)
+    return {
+      color: colors.blue,
+      fields: [{ name: 'Error', value: `Could not find user ${person}` }],
+    }
 
   let reason = ''
   if (!args[1]) reason = 'No reason given.'
-  else for (const arg in args.slice(1)) reason += ` ${arg}`
+  else for (const arg in args.slice(1)) reason += arg
 
   const embed = {
     color: colors.red,
@@ -25,7 +29,7 @@ function ban(message, args) {
     },
     fields: [{ name: 'Reason', value: reason }],
   }
-  person.send({ embeds: embed })
+  await sendMessage({ embeds: embed }, person.dmChannel)
 
   setTimeout(function () {
     person.ban(reason)
@@ -43,7 +47,7 @@ function ban(message, args) {
       { name: 'Reason', value: reason },
     ],
   }
-  sendMessage({ embeds: [banEmbed] }, channels.punishments)
+  await sendMessage({ embeds: [banEmbed] }, channels.punishments)
   return banEmbed
 }
 module.exports = ban

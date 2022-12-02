@@ -6,7 +6,7 @@ const { main_server, channels, categories, prefix, colors, images } = require('.
  * @param {Message} message message that was deleted
  */
 module.exports = async (message) => {
-  if (message.partial) await message.fetch()
+  if (message.partial) message = await message.fetch()
 
   if (
     message.author.bot ||

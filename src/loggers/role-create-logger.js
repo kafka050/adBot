@@ -13,7 +13,7 @@ module.exports = (role) => {
     thumbnail: {
       url: images.ibex.blue,
     },
-    fields: [{ name: 'Role', value: role }],
+    fields: [{ name: 'Role', value: role.toString() }],
   }
   return embed
 }

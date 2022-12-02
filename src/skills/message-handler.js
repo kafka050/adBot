@@ -34,7 +34,7 @@ function parseMessage(message) {
  * Determines what actions to take on any new message
  * @param {Message} message message to deal with
  */
-function handleMessage(message) {
+async function handleMessage(message) {
   if (message.channel.type === 'dm') return
   if (message.author.bot) return
   if (!isCommand(message.content)) return
@@ -49,10 +49,10 @@ function handleMessage(message) {
       embed = promo(args)
       break
     case 'mute':
-      embed = mute(message, args)
+      embed = await mute(message, args)
       break
     case 'ban':
-      embed = ban(message, args)
+      embed = await ban(message, args)
       break
     default:
       if (parsedMessage.command in infoCmds) {
@@ -66,6 +66,7 @@ function handleMessage(message) {
       }
       break
   }
+  if (!embed) return
   sendMessage({ embeds: [embed] }, message.channel)
 }
 module.exports = {

@@ -126,7 +126,9 @@ module.exports = {
   },
   credits: {
     color: colors.blue,
-    thumbnail: 'https://cdn.pixabay.com/photo/2016/11/25/16/37/smilie-1858768_960_720.png',
+    thumbnail: {
+      url: 'https://cdn.pixabay.com/photo/2016/11/25/16/37/smilie-1858768_960_720.png',
+    },
     title: 'Creators',
     description: 'This bot was developed by: <@254303885886357508> and <@166331892075855873>',
     footer: {
