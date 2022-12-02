@@ -1,10 +1,8 @@
 const { version } = require('../package.json')
-const botconfig = require('../botconfig.json')
 
 module.exports = {
   version: version,
-  prefix: botconfig.prefix,
-  token: botconfig.token,
+  prefix: '.',
   main_server: '983818242206335017',
   announcementID: {
     id: '000000000000000000',

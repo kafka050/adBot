@@ -26,6 +26,8 @@ const autoMod = require('./skills/auto-mod')
 const { handleMessage } = require('./skills/message-handler')
 const { channels, colors } = require('./info')
 const { reactionAdd } = require('./skills/reaction-handler')
+require('dotenv').config()
+info.prefix = process.env.PREFIX
 const bot = new Client({
   partials: [Partials.Message, Partials.Channel, Partials.GuildMember, Partials.Reaction, Partials.User],
   intents: [
@@ -140,4 +142,4 @@ bot.on(Events.MessageReactionAdd, async (reaction, user) => {
   await reactionAdd(reaction, user)
 })
 
-bot.login(info.token)
+bot.login()
