@@ -4,7 +4,8 @@
   "description": "A test bot for Alpine",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "test": "npx jest"
   },
   "author": "Quack & Schon",
   "license": "ISC",

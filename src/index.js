@@ -21,13 +21,13 @@ const channelDeleteLogger = require('./loggers/channel-delete-logger')
 const roleCreateLogger = require('./loggers/role-create-logger')
 const roleDeleteLogger = require('./loggers/role-delete-logger')
 const roleUpdateLogger = require('./loggers/role-update-logger')
-const reactionAddLogger = require('./loggers/reaction-add-logger')
-const reactionRemoveLogger = require('./loggers/reaction-remove-logger')
 const { sendWelcome, updateMemberCount, sendMessage } = require('./tools/utils')
 const autoMod = require('./skills/auto-mod')
 const { handleMessage } = require('./skills/message-handler')
-const { channels } = require('./info')
+const { channels, colors } = require('./info')
 const { reactionAdd } = require('./skills/reaction-handler')
+require('dotenv').config()
+info.prefix = process.env.PREFIX
 const bot = new Client({
   partials: [Partials.Message, Partials.Channel, Partials.GuildMember, Partials.Reaction, Partials.User],
   intents: [
@@ -42,7 +42,7 @@ const bot = new Client({
 /**
  * This logs to the console that the bot is online, and sets its appearance in the discord server
  */
-bot.on('ready', async () => {
+bot.on('ready', async (thing) => {
   console.log(`${bot.user.username} is online!`)
   bot.user.setActivity('#GOPINE!!')
 
@@ -64,83 +64,82 @@ bot.on('ready', async () => {
  * This code runs whenever there is a message sent in the discord server
  * Does not run when message sent by another bot, or if in DM
  */
-bot.on(Events.MessageCreate, (message) => {
+bot.on(Events.MessageCreate, async (message) => {
   console.log('Received message.')
-  handleMessage(message)
+  await handleMessage(message)
   autoMod(message, message.author)
 })
+bot.on(Events.MessageDelete, async (message) => {
+  console.log('Message deleted')
+  const logEmbed = await messageDeleteLogger(message)
+  if (!logEmbed) return
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
+})
+bot.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
+  console.log('Message updated.')
+  const logEmbed = await messageUpdateLogger(oldMessage, newMessage)
+  if (!logEmbed) return
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
+  autoMod(newMessage, newMessage.author)
+})
 
-bot.on(Events.GuildMemberAdd, (member) => {
+bot.on(Events.GuildMemberAdd, async (member) => {
   console.log('Member joined')
   sendWelcome(member)
   updateMemberCount(member)
   const logEmbed = memberAddLogger(member)
   if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
 })
-bot.on(Events.GuildMemberRemove, (member) => {
+bot.on(Events.GuildMemberRemove, async (member) => {
   console.log('Member left')
   updateMemberCount(member)
-  const logEmbed = memberRemoveLogger(member)
+  const logEmbed = await memberRemoveLogger(member)
   if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
 })
-bot.on(Events.GuildMemberUpdate, (oldMember, newMember) => {
+bot.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
   console.log('Member updated')
-  const logEmbed = memberUpdateLogger(oldMember, newMember)
+  const logEmbed = await memberUpdateLogger(oldMember, newMember)
   if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
 })
-bot.on(Events.MessageDelete, async (message) => {
-  console.log('Message deleted')
-  const logEmbed = messageDeleteLogger(message)
-  if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
-})
-bot.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
-  console.log('Message updated')
-  const logEmbed = messageUpdateLogger(oldMessage, newMessage)
-  if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
-  autoMod(newMessage, newMessage.author)
-})
-bot.on(Events.ChannelCreate, (channel) => {
+
+bot.on(Events.ChannelCreate, async (channel) => {
   console.log('Channel created')
   const logEmbed = channelCreateLogger(channel)
   if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
 })
 bot.on(Events.ChannelDelete, async (channel) => {
   console.log('Channel deleted')
-  channelDeleteLogger(channel)
-  const logEmbed = channelDeleteLogger(channel)
+  const logEmbed = await channelDeleteLogger(channel)
   if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
 })
-bot.on(Events.GuildRoleCreate, (role) => {
+
+bot.on(Events.GuildRoleCreate, async (role) => {
   console.log('Role created')
   const logEmbed = roleCreateLogger(role)
   if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
 })
-bot.on(Events.GuildRoleDelete, (role) => {
+bot.on(Events.GuildRoleDelete, async (role) => {
   console.log('Role deleted')
   const logEmbed = roleDeleteLogger(role)
   if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
 })
-bot.on(Events.GuildRoleUpdate, (oldRole, newRole) => {
+bot.on(Events.GuildRoleUpdate, async (oldRole, newRole) => {
   console.log('Role updated')
   const logEmbed = roleUpdateLogger(oldRole, newRole)
   if (!logEmbed) return
-  sendMessage(logEmbed, channels.logs)
-})
-bot.on(Events.MessageReactionAdd, async (reaction, user) => {
-  console.log('Reaction added')
-  reactionAdd(reaction, user)
-})
-bot.on(Events.MessageReactionRemove, async (reaction, user) => {
-  console.log('Reaction removed')
+  await sendMessage({ embeds: [logEmbed] }, channels.logs)
 })
 
-bot.login(info.token)
+bot.on(Events.MessageReactionAdd, async (reaction, user) => {
+  console.log('Reaction added')
+  await reactionAdd(reaction, user)
+})
+
+bot.login()

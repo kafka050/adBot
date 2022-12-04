@@ -10,16 +10,7 @@ module.exports = async (oldMessage, newMessage) => {
   if (oldMessage.partial) await oldMessage.fetch()
   if (newMessage.partial) await newMessage.fetch()
 
-  if (
-    oldMessage.partial ||
-    newMessage.channel.type === 'dm' ||
-    newMessage.guild.id !== main_server ||
-    oldMessage.channel.parent === categories.admin ||
-    oldMessage.channel === channels.trial_announcements ||
-    oldMessage.channel === channels.bot_testing ||
-    oldMessage.channel === channels.tournament_announcements ||
-    oldMessage.author.bot
-  ) {
+  if (newMessage.channel.type === 'dm' || newMessage.guild.id !== main_server || oldMessage.author.bot) {
     return null
   }
   if (oldMessage.content.length >= 250) {
@@ -28,16 +19,23 @@ module.exports = async (oldMessage, newMessage) => {
   if (newMessage.content.length >= 250) {
     newMessage.content = newMessage.content.slice(0, 250) + '...'
   }
-  const embed = {
-    author: newMessage.author,
+  return {
     color: colors.orange,
-    thumbnail: images.ibex.orange,
-    description: `**Message Edited in** <#${newMessage.channel}> [Jump to message](${newMessage.url})`,
-    footer: `User ID: ${newMessage.author.id} | ${newMessage.createdAt}`,
+    title: 'Message edited',
+    author: {
+      name: newMessage.author.username,
+      icon_url: newMessage.author.avatarURL(),
+    },
+    description: `**Message Edited in** ${newMessage.channel} [Jump to message](${newMessage.url})`,
+    thumbnail: {
+      url: images.ibex.orange,
+    },
     fields: [
       { name: 'Before', value: oldMessage.content },
       { name: 'After', value: newMessage.content },
     ],
+    footer: {
+      text: `User ID: ${newMessage.author.id} | ${newMessage.createdAt}`,
+    },
   }
-  return embed
 }

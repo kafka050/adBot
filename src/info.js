@@ -1,10 +1,8 @@
 const { version } = require('../package.json')
-const botconfig = require('../botconfig.json')
 
 module.exports = {
   version: version,
-  prefix: botconfig.prefix,
-  token: botconfig.token,
+  prefix: '.',
   main_server: '983818242206335017',
   announcementID: {
     id: '000000000000000000',
@@ -39,8 +37,8 @@ module.exports = {
   },
   // partner (server id) (channel id)
   partners: [
-    { server: '1234567890987654321', channel: '1234567890987654321' }, // fake server/channel
-    { server: '0987654321234567890', channel: '0987654321234567890' }, // fake server/channel
+    //{ server: '1234567890987654321', channel: '1234567890987654321' }, // fake server/channel
+    //{ server: '0987654321234567890', channel: '0987654321234567890' }, // fake server/channel
   ],
   colors: {
     red: 0xad1d1d,
