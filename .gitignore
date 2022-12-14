@@ -128,3 +128,6 @@ dist
 
 # bot config
 botconfig.json
+
+# login
+login.pem
