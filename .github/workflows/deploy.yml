@@ -15,24 +15,18 @@ jobs:
       - name: Checkout the files
         uses: actions/checkout@v2
 
-      - name: Deploy to Server 1
+      - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.HOST_DNS }}
           REMOTE_USER: ${{ secrets.USERNAME }}
           TARGET: ${{ secrets.TARGET_DIR }}
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Executing remote ssh commands using ssh key
-        uses: appleboy/ssh-action@master
+          
+      - name: run
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.HOST_DNS }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd ~/YOUR/TARGET/DIR
-            npm install
-            npm start
+          script: 'cd tests && npm install && node src/restart.js'
